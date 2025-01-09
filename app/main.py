@@ -67,6 +67,27 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+class Workout(BaseModel):
+    user: str
+    date: datetime
+    duration: int  # duration in minutes
+    type: str
+    details: Optional[str] = None
+
+# In-memory workout storage
+workouts_db = []
+
+@app.post("/workouts/", response_model=Workout)
+def upload_workout(workout: Workout):
+    # Validate workout type
+    valid_types = ["running", "cycling", "swimming", "strength_training"]
+    if workout.type not in valid_types:
+        raise HTTPException(status_code=400, detail="Invalid workout type")
+    
+    # Store the workout data
+    workouts_db.append(workout.dict())
+    return workout
+
 @app.post("/users/", response_model=User)
 def create_user(user: User):
     user_dict = user.dict()
