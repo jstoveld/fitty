@@ -108,3 +108,7 @@ def read_users_me(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return user
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the FastAPI application"}
