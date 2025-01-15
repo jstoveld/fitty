@@ -37,7 +37,7 @@ def get_db():
         db.close()
 
 # Secret key to encode the JWT
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "TODO" #TODO
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

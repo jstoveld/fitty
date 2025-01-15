@@ -137,3 +137,7 @@ cython_debug/
 # Draw.io backup files
 *.drawio.bkp
 .$fitty_api.drawio.bkp
+
+
+## Test DB
+test.db
