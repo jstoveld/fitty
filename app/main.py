@@ -97,6 +97,14 @@ class Workout(BaseModel):
     type: str
     details: Optional[str] = None
 
+class WorkoutAnalysis(BaseModel):
+    user: str
+    date: datetime
+    duration: int  # duration in minutes
+    type: str
+    details: Optional[str] = None
+    analysis: str
+
 # In-memory workout storage
 workouts_db = []
 
@@ -110,6 +118,21 @@ def upload_workout(workout: Workout):
     # Store the workout data
     workouts_db.append(workout.dict())
     return workout
+
+@app.post("/analyze_workout/", response_model=WorkoutAnalysis)
+def analyze_workout(workout: Workout):
+    # Mock analysis process
+    analysis_result = f"Analysis for {workout.type} workout on {workout.date} for {workout.duration} minutes."
+    
+    # Return the workout data along with the analysis result
+    return WorkoutAnalysis(
+        user=workout.user,
+        date=workout.date,
+        duration=workout.duration,
+        type=workout.type,
+        details=workout.details,
+        analysis=analysis_result
+    )
 
 @app.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -162,4 +185,4 @@ def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the FastAPI application"}
+    return {"message": "This is Fitty. Under Construction."}
