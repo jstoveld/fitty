@@ -52,10 +52,14 @@ env_config = context['environments'][environment]
 secret_name = env_config['SECRET_KEY']
 region_name = env_config['S3_REGION']
 
-# Retrieve and set the secret key
-secret_key = get_secret(secret_name, region_name)
-if secret_key:
-    os.environ['SECRET_KEY'] = secret_key
+# Retrieve and set the secret key for AWS environments
+if environment != 'dev':
+    secret_key = get_secret(secret_name, region_name)
+    if secret_key:
+        os.environ['SECRET_KEY'] = secret_key
+else:
+    # Use the local secret key from .env for local development
+    os.environ['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app = FastAPI()
 
@@ -160,8 +164,11 @@ workouts_db = []
 S3_BUCKET = env_config["S3_BUCKET"]
 s3_client = boto3.client('s3', region_name=region_name)
 
-@app.post("/upload_workout_file/")
-def upload_workout_file(file: UploadFile = File(...)):
+@app.post("/workouts/")
+def upload_workout_file(file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+    if not file.filename.endswith('.fit'):
+        raise HTTPException(status_code=400, detail="Invalid file type. Only .fit files are allowed.")
+    
     try:
         s3_client.upload_fileobj(file.file, S3_BUCKET, file.filename)
         return {"message": "File uploaded successfully", "filename": file.filename}
@@ -179,17 +186,6 @@ def download_workout_file(filename: str):
         raise HTTPException(status_code=500, detail="AWS credentials not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/workouts/", response_model=Workout)
-def upload_workout(workout: Workout):
-    # Validate workout type
-    valid_types = ["running", "cycling", "swimming", "strength_training"]
-    if workout.type not in valid_types:
-        raise HTTPException(status_code=400, detail="Invalid workout type")
-    
-    # Store the workout data
-    workouts_db.append(workout.dict())
-    return workout
 
 @app.post("/analyze_workout/", response_model=WorkoutAnalysis)
 def analyze_workout(workout: Workout):
