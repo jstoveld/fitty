@@ -11,25 +11,51 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import boto3
-from botocore.exceptions import NoCredentialsError
-from dotenv import load_dotenv  # Import the library
-from cryptography.fernet import Fernet  # Import the library
-
-# Generate a secret key if it doesn't exist
-if not os.getenv("SECRET_KEY"):
-    secret_key = Fernet.generate_key().decode()
-    with open(".env", "a") as env_file:
-        env_file.write(f"\nSECRET_KEY={secret_key}\n")
-    os.environ["SECRET_KEY"] = secret_key
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Load environment-specific variables from context.yaml
-with open("context.yaml", "r") as file:
-    context = yaml.safe_load(file)
-environment = os.getenv("ENVIRONMENT", "dev")
-env_config = context["environments"][environment]
+def get_secret(secret_name, region_name):
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except (NoCredentialsError, PartialCredentialsError) as e:
+        print(f"Credentials error: {e}")
+        return None
+    except Exception as e:
+        print(f"Error retrieving secret: {e}")
+        return None
+
+    # Decrypts secret using the associated KMS key.
+    secret = get_secret_value_response['SecretString']
+    return secret
+
+def load_context():
+    with open('/Users/js/code/roadmap/fitty/context.yaml', 'r') as file:
+        context = yaml.safe_load(file)
+    return context
+
+# Load context and environment
+context = load_context()
+environment = os.getenv('ENVIRONMENT', 'dev')
+env_config = context['environments'][environment]
+secret_name = env_config['SECRET_KEY']
+region_name = env_config['S3_REGION']
+
+# Retrieve and set the secret key
+secret_key = get_secret(secret_name, region_name)
+if secret_key:
+    os.environ['SECRET_KEY'] = secret_key
 
 app = FastAPI()
 
@@ -59,7 +85,7 @@ def get_db():
         db.close()
 
 # Secret key to encode the JWT
-SECRET_KEY = os.getenv("SECRET_KEY", env_config["SECRET_KEY"])
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -132,8 +158,7 @@ workouts_db = []
 
 # AWS S3 setup
 S3_BUCKET = env_config["S3_BUCKET"]
-S3_REGION = env_config["S3_REGION"]
-s3_client = boto3.client('s3', region_name=S3_REGION)
+s3_client = boto3.client('s3', region_name=region_name)
 
 @app.post("/upload_workout_file/")
 def upload_workout_file(file: UploadFile = File(...)):
