@@ -1,0 +1,13 @@
+environments:
+  dev:
+    S3_BUCKET: fitty-bucket-dev 
+    S3_REGION: us-east-1
+    SECRET_KEY: your_dev_secret_key
+  sit:
+    S3_BUCKET: fitty-bucket-sit
+    S3_REGION: us-east-1
+    SECRET_KEY: your_sit_secret_key
+  prod:
+    S3_BUCKET: fitty-bucket-prod
+    S3_REGION: us-east-1
+    SECRET_KEY: your_prod_secret_key

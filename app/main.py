@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException
+import os
+import yaml
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from typing import Optional
@@ -8,6 +10,26 @@ from passlib.context import CryptContext
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+import boto3
+from botocore.exceptions import NoCredentialsError
+from dotenv import load_dotenv  # Import the library
+from cryptography.fernet import Fernet  # Import the library
+
+# Generate a secret key if it doesn't exist
+if not os.getenv("SECRET_KEY"):
+    secret_key = Fernet.generate_key().decode()
+    with open(".env", "a") as env_file:
+        env_file.write(f"\nSECRET_KEY={secret_key}\n")
+    os.environ["SECRET_KEY"] = secret_key
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Load environment-specific variables from context.yaml
+with open("context.yaml", "r") as file:
+    context = yaml.safe_load(file)
+environment = os.getenv("ENVIRONMENT", "dev")
+env_config = context["environments"][environment]
 
 app = FastAPI()
 
@@ -37,7 +59,7 @@ def get_db():
         db.close()
 
 # Secret key to encode the JWT
-SECRET_KEY = "TODO" #TODO
+SECRET_KEY = os.getenv("SECRET_KEY", env_config["SECRET_KEY"])
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -107,6 +129,31 @@ class WorkoutAnalysis(BaseModel):
 
 # In-memory workout storage
 workouts_db = []
+
+# AWS S3 setup
+S3_BUCKET = env_config["S3_BUCKET"]
+S3_REGION = env_config["S3_REGION"]
+s3_client = boto3.client('s3', region_name=S3_REGION)
+
+@app.post("/upload_workout_file/")
+def upload_workout_file(file: UploadFile = File(...)):
+    try:
+        s3_client.upload_fileobj(file.file, S3_BUCKET, file.filename)
+        return {"message": "File uploaded successfully", "filename": file.filename}
+    except NoCredentialsError:
+        raise HTTPException(status_code=500, detail="AWS credentials not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/download_workout_file/{filename}")
+def download_workout_file(filename: str):
+    try:
+        file_url = s3_client.generate_presigned_url('get_object', Params={'Bucket': S3_BUCKET, 'Key': filename}, ExpiresIn=3600)
+        return {"file_url": file_url}
+    except NoCredentialsError:
+        raise HTTPException(status_code=500, detail="AWS credentials not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/workouts/", response_model=Workout)
 def upload_workout(workout: Workout):
