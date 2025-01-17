@@ -4,7 +4,7 @@ import fitparse
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -143,8 +143,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-from typing import List
-
 class Workout(BaseModel):
     user: str
     date: datetime
@@ -155,22 +153,24 @@ class Workout(BaseModel):
     heart_rate: List[int] = []
     speed: List[float] = []
     distance: List[float] = []
-    calories: Optional[int] = None
+    calories: Optional[int] = None  # Changed to Optional[int]
+    power: List[int] = []
 
 class WorkoutAnalysis(BaseModel):
     user: str
-    date: datetime
-    duration: int  # duration in minutes
+    date: str
+    duration: int
     type: str
-    details: Optional[str] = None
+    details: str
     analysis: str
-    llm_feedback: Optional[str] = None  # Placeholder for LLM feedback
-    analysis_graph_url: Optional[str] = None  # Placeholder for analysis graph URL
-    timestamps: List[datetime] = []
-    heart_rate: List[int] = []
-    speed: List[float] = []
-    distance: List[float] = []
-    calories: Optional[int] = None
+    llm_feedback: str
+    analysis_graph_url: str
+    timestamps: List[str]
+    heart_rate: List[int]
+    speed: List[float]
+    distance: List[float]
+    calories: Optional[int]
+    power: Optional[int]
 
 # In-memory workout storage
 workouts_db = []
@@ -215,8 +215,12 @@ def analyze_workout(file: UploadFile = File(...), token: str = Depends(oauth2_sc
     heart_rate = []
     speed = []
     distance = []
-    calories = None
+    calories = []
+    power = []
     
+    # Initialize calories as None
+    calories = None
+
     for record in fitfile.get_messages("record"):
         for data in record:
             if data.name == "timestamp":
@@ -229,35 +233,44 @@ def analyze_workout(file: UploadFile = File(...), token: str = Depends(oauth2_sc
                 distance.append(data.value)
             elif data.name == "calories":
                 calories = data.value
+            elif data.name == "power":
+                power = data.value
     
     # Mock analysis process
     analysis_result = f"Analysis for workout on {timestamps[0]} for {len(timestamps)} records."
-    
+
     # Placeholder for LLM feedback
     llm_feedback = "This is a placeholder for LLM feedback."
-    
+
     # Placeholder for analysis graph URL
     analysis_graph_url = "https://example.com/analysis_graph.png"
-    
+
+    # Convert datetime objects to strings
+    timestamps_str = [ts.isoformat() for ts in timestamps]
+
     # Return the workout data along with the analysis result, LLM feedback, and analysis graph URL
     return WorkoutAnalysis(
         user="example_user",
-        date=timestamps[0],
+        date=timestamps_str[0],
         duration=len(timestamps),
         type="example_type",
         details="example_details",
         analysis=analysis_result,
         llm_feedback=llm_feedback,
         analysis_graph_url=analysis_graph_url,
-        timestamps=timestamps,
+        timestamps=timestamps_str,
         heart_rate=heart_rate,
         speed=speed,
         distance=distance,
-        calories=calories
+        calories=calories,
+        power=power
     )
 
 @app.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = get_user(db, user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
     hashed_password = get_password_hash(user.password)
     db_user = UserInDB(
         username=user.username,
