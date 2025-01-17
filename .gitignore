@@ -141,3 +141,7 @@ cython_debug/
 
 ## Test DB
 test.db
+
+
+## Demo Data
+Master-Blaster.fit

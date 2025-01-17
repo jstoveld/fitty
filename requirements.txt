@@ -36,6 +36,7 @@ fastapi==0.100.1
 fastapi-socketio==0.0.10
 filelock==3.13.1
 filetype==1.2.0
+fitparse==1.2.0
 frozenlist==1.4.0
 googleapis-common-protos==1.61.0
 greenlet==3.0.3

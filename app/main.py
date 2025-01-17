@@ -1,5 +1,6 @@
 import os
 import yaml
+import fitparse
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -142,12 +143,19 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+from typing import List
+
 class Workout(BaseModel):
     user: str
     date: datetime
     duration: int  # duration in minutes
     type: str
     details: Optional[str] = None
+    timestamps: List[datetime] = []
+    heart_rate: List[int] = []
+    speed: List[float] = []
+    distance: List[float] = []
+    calories: Optional[int] = None
 
 class WorkoutAnalysis(BaseModel):
     user: str
@@ -156,6 +164,13 @@ class WorkoutAnalysis(BaseModel):
     type: str
     details: Optional[str] = None
     analysis: str
+    llm_feedback: Optional[str] = None  # Placeholder for LLM feedback
+    analysis_graph_url: Optional[str] = None  # Placeholder for analysis graph URL
+    timestamps: List[datetime] = []
+    heart_rate: List[int] = []
+    speed: List[float] = []
+    distance: List[float] = []
+    calories: Optional[int] = None
 
 # In-memory workout storage
 workouts_db = []
@@ -188,18 +203,57 @@ def download_workout_file(filename: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/analyze_workout/", response_model=WorkoutAnalysis)
-def analyze_workout(workout: Workout):
-    # Mock analysis process
-    analysis_result = f"Analysis for {workout.type} workout on {workout.date} for {workout.duration} minutes."
+def analyze_workout(file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+    if not file.filename.endswith('.fit'):
+        raise HTTPException(status_code=400, detail="Invalid file type. Only .fit files are allowed.")
     
-    # Return the workout data along with the analysis result
+    # Parse the .fit file
+    fitfile = fitparse.FitFile(file.file)
+    
+    # Extract data from the .fit file
+    timestamps = []
+    heart_rate = []
+    speed = []
+    distance = []
+    calories = None
+    
+    for record in fitfile.get_messages("record"):
+        for data in record:
+            if data.name == "timestamp":
+                timestamps.append(data.value)
+            elif data.name == "heart_rate":
+                heart_rate.append(data.value)
+            elif data.name == "speed":
+                speed.append(data.value)
+            elif data.name == "distance":
+                distance.append(data.value)
+            elif data.name == "calories":
+                calories = data.value
+    
+    # Mock analysis process
+    analysis_result = f"Analysis for workout on {timestamps[0]} for {len(timestamps)} records."
+    
+    # Placeholder for LLM feedback
+    llm_feedback = "This is a placeholder for LLM feedback."
+    
+    # Placeholder for analysis graph URL
+    analysis_graph_url = "https://example.com/analysis_graph.png"
+    
+    # Return the workout data along with the analysis result, LLM feedback, and analysis graph URL
     return WorkoutAnalysis(
-        user=workout.user,
-        date=workout.date,
-        duration=workout.duration,
-        type=workout.type,
-        details=workout.details,
-        analysis=analysis_result
+        user="example_user",
+        date=timestamps[0],
+        duration=len(timestamps),
+        type="example_type",
+        details="example_details",
+        analysis=analysis_result,
+        llm_feedback=llm_feedback,
+        analysis_graph_url=analysis_graph_url,
+        timestamps=timestamps,
+        heart_rate=heart_rate,
+        speed=speed,
+        distance=distance,
+        calories=calories
     )
 
 @app.post("/users/", response_model=User)
