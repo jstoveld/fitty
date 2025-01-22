@@ -14,7 +14,7 @@ class Workout(BaseModel):
     speed: List[float] = []
     distance: List[float] = []
     calories: Optional[int] = None
-    power: List[int] = []
+    power: List[int]
 
 class WorkoutAnalysis(BaseModel):
     user: str
@@ -30,4 +30,4 @@ class WorkoutAnalysis(BaseModel):
     speed: List[float]
     distance: List[float]
     calories: Optional[int]
-    power: Optional[int]
+    power: List[int]

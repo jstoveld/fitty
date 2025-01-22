@@ -1,20 +1,26 @@
-# filepath: /app/routers/analyze.py
-from fastapi import APIRouter, HTTPException
-import fitparse
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from ..models.workout import WorkoutAnalysis
+from ..dependencies import get_db, get_current_user
 from ..utils.s3 import get_file_from_s3
+import fitparse
 
 router = APIRouter()
 
+class AnalyzeRequest(BaseModel):
+    file_id: str
+
 @router.post("/analyze/")
-async def analyze_workout(file_id: str):
-    s3_key = f"workouts/{file_id}.fit"
+async def analyze_workout(request: AnalyzeRequest, current_user: str = Depends(get_current_user), db: Session = Depends(get_db)):
+    user_id = current_user.username  # Assuming `username` is the unique identifier for the user
+    s3_key = f"{user_id}/workouts/{request.file_id}"
     
     try:
         file_body = get_file_from_s3(s3_key)
         fitfile = fitparse.FitFile(file_body)
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to retrieve file from S3")
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve or process file from S3: {e}")
     
     timestamps = []
     heart_rate = []
@@ -44,7 +50,7 @@ async def analyze_workout(file_id: str):
     timestamps_str = [ts.isoformat() for ts in timestamps]
 
     workout_analysis = WorkoutAnalysis(
-        user="example_user",
+        user=user_id,
         date=timestamps_str[0],
         duration=len(timestamps),
         type="example_type",

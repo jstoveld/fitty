@@ -1,6 +1,7 @@
 import boto3
 import os
 import logging
+import io
 
 # Load the S3 bucket name from environment variables
 S3_BUCKET = os.getenv("S3_BUCKET")
@@ -23,8 +24,11 @@ def upload_file_to_s3(file, key):
 
 def get_file_from_s3(key):
     try:
+        logging.info(f"Attempting to retrieve file from S3 with key: {key}")
         response = s3_client.get_object(Bucket=S3_BUCKET, Key=key)
-        return response['Body']
+        logging.info(f"Successfully retrieved file from S3 with key: {key}")
+        file_content = response['Body'].read()
+        return io.BytesIO(file_content)
     except Exception as e:
         logging.error(f"Failed to retrieve file from S3: {e}")
         raise Exception("Failed to retrieve file from S3")
