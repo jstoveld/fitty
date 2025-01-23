@@ -21,7 +21,7 @@ os.environ['S3_BUCKET'] = env_config['S3_BUCKET']
 os.environ['S3_REGION'] = env_config['S3_REGION']
 os.environ['SECRET_KEY'] = env_config['SECRET_KEY']
 
-from app.routers import upload_router, analyze_router, users_router, auth_router
+from app.routers import upload_router, analyze_router, users_router, auth_router, zones_router
 
 app = FastAPI()
 
@@ -30,6 +30,7 @@ app.include_router(upload_router)
 app.include_router(analyze_router)
 app.include_router(users_router)
 app.include_router(auth_router)
+app.include_router(zones_router)
 
 @app.get("/")
 def read_root():
