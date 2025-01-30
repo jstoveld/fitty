@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional
-from sqlalchemy import Column, String, Boolean
-from app.database import Base
+from sqlalchemy import Boolean, Column, String, Integer, ARRAY
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 # SQLAlchemy model
 class User(Base):
@@ -12,6 +14,8 @@ class User(Base):
     full_name = Column(String, nullable=True)
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
+    power_zones = Column(ARRAY(Integer), nullable=True)
+    heart_rate_zones = Column(ARRAY(Integer), nullable=True)
 
 # Pydantic models
 class UserBase(BaseModel):
