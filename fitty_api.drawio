@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9">
   <diagram name="Page-1" id="X58M6MiDPaJugMH5M7qP">
-    <mxGraphModel dx="2074" dy="1214" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1578" dy="1143" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -9,6 +9,14 @@
         </mxCell>
         <mxCell id="w113aEQZ9uQ4XHDFiw8Y-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.28;exitY=0.99;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="hINtiIYNp804mXkB7DZi-2" target="hINtiIYNp804mXkB7DZi-12" edge="1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.72;exitY=0.99;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="hINtiIYNp804mXkB7DZi-2" target="jB8PcrKEyf_NpLbfoQP3-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="398" y="460" />
+              <mxPoint x="335" y="460" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="hINtiIYNp804mXkB7DZi-2" value="api" style="aspect=fixed;sketch=0;html=1;dashed=0;whitespace=wrap;verticalLabelPosition=bottom;verticalAlign=top;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];shape=mxgraph.kubernetes.icon2;prIcon=api" parent="1" vertex="1">
           <mxGeometry x="330" y="96" width="93.75" height="90" as="geometry" />
@@ -78,6 +86,24 @@
         <mxCell id="pylUBdCbRKqUNI8GiXFk-5" value="Feedback" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="pylUBdCbRKqUNI8GiXFk-2" vertex="1">
           <mxGeometry y="90" width="140" height="30" as="geometry" />
         </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-1" value="Zones" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="pylUBdCbRKqUNI8GiXFk-1">
+          <mxGeometry x="680" y="160" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-2" value="User Configuration" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="pylUBdCbRKqUNI8GiXFk-1">
+          <mxGeometry x="160" y="30" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-3" value="Setup HR Zones" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="jB8PcrKEyf_NpLbfoQP3-2">
+          <mxGeometry y="30" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-4" value="Setup&amp;nbsp; Power Zones" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="jB8PcrKEyf_NpLbfoQP3-2">
+          <mxGeometry y="60" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-5" value="Update zones" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="jB8PcrKEyf_NpLbfoQP3-2">
+          <mxGeometry y="90" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jB8PcrKEyf_NpLbfoQP3-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="pylUBdCbRKqUNI8GiXFk-1" source="jB8PcrKEyf_NpLbfoQP3-4" target="jB8PcrKEyf_NpLbfoQP3-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="pylUBdCbRKqUNI8GiXFk-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;" parent="1" source="hINtiIYNp804mXkB7DZi-14" target="hINtiIYNp804mXkB7DZi-7" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -101,7 +127,7 @@
             <mxPoint x="170" y="210" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tmPEHnuIUgH78Pf-I2St-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="Jf3LPVb7y6zxlQIpmkF9-5" source="Jf3LPVb7y6zxlQIpmkF9-4">
+        <mxCell id="tmPEHnuIUgH78Pf-I2St-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;" parent="Jf3LPVb7y6zxlQIpmkF9-5" source="Jf3LPVb7y6zxlQIpmkF9-4" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="170" y="710" as="targetPoint" />
           </mxGeometry>
@@ -154,10 +180,10 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="w113aEQZ9uQ4XHDFiw8Y-22" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Todo&lt;/h1&gt;&lt;p&gt;Need to add the following endpoints:&lt;/p&gt;&lt;p&gt;analyze&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;auth&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;upload&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;users&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;use of boto3 for s3util&lt;/p&gt;&lt;p&gt;Need to map out user journey and container journey for deployment of AI model&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="80" y="860" width="180" height="270" as="geometry" />
+        <mxCell id="w113aEQZ9uQ4XHDFiw8Y-22" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Todo&lt;/h1&gt;&lt;p&gt;Need to add the following endpoints:&lt;/p&gt;&lt;p&gt;analyze - Ready for testing&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;auth - ready for testing&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;upload - functional&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;users - functional&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;use of boto3 for s3util - functional&lt;/p&gt;&lt;p&gt;Need to map out user journey and container journey for deployment of AI model&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="50" y="860" width="210" height="270" as="geometry" />
         </mxCell>
-        <mxCell id="tmPEHnuIUgH78Pf-I2St-2" value="TBD" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="tmPEHnuIUgH78Pf-I2St-2" value="TBD" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1181" y="930" width="200" height="200" as="geometry" />
         </mxCell>
       </root>
